@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+
+int main() {
+        xmlDocPtr xmltxt;
+        xmlNodePtr booknode, cur;
+
+        xmltxt = xmlReadFile("catalog.xml", NULL, 0);
+        booknode = xmlDocGetRootElement(xmltxt);
+        cur = booknode->children;
+
+        while (cur != NULL) {
+                // parses each book in xml
+                if (xmlStrcmp(cur -> name, (const xmlChar *)"book") == 0) {
+                        xmlNodePtr titlenode = cur -> children;
+                        while (titlenode != NULL) {
+                                // grabs and prints title of each listed book
+                                if (xmlStrcmp(titlenode -> name, (const xmlChar *)"title") == 0) {
+                                 printf("Title: %x\n", xmlNodeGetContent(titlenode));
+                                 break;
+                                }
+                                titlenode = titlenode -> next;
+                        }
+                }
+                cur  = cur->next;
+        }
+        xmlFreeDoc(xmltxt);
+        xmlCleanupParser();
+
+        return 0;
+}
